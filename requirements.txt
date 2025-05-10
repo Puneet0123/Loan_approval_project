@@ -9,6 +9,7 @@ seaborn
 # Modeling & Evaluation
 scikit-learn
 joblib
+xgboost
 
 # Environment/Notebook Support
 jupyterlab==4.0.6
