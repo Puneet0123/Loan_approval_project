@@ -1,0 +1,14 @@
+# Core Libraries
+numpy
+pandas
+
+# Visualization
+matplotlib
+seaborn
+
+# Modeling & Evaluation
+scikit-learn
+joblib
+
+# Environment/Notebook Support
+jupyterlab==4.0.6
