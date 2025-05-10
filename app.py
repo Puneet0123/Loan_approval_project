@@ -6,7 +6,7 @@ import math
 from sklearn.preprocessing import StandardScaler
 
 # Load model and scaler\
-thresholds = joblib.load('threshold_precision.pkl')
+thresholds = joblib.load('optimal_threshold.pkl')
 model = joblib.load("best_model.pkl") 
 
 # Streamlit UI
@@ -34,9 +34,9 @@ with st.form("loan_form"):
         self_employed = st.selectbox("Self Employed",["Yes","No"])
         loan_amount = st.number_input("Loan Amount (in 1000s)", min_value=1000)
         loan_term = st.number_input("Loan Term (in days)", min_value =60)
-        property_area = st.selectobx("Property Area", ["Urban","Semi Urban","Rural"])
+        property_area = st.selectbox("Property Area", ["Urban","Semi Urban","Rural"])
             
-    credit_history = st.selectbox("Credit History", ['1','0'])
+    credit_history = st.selectbox("Credit History", [1,0])
     
     
     submitted = st.form_submit_button("Predict Loan Status")      
@@ -48,6 +48,8 @@ log_loan_amount = math.log(loan_amount)
 scaler_arr =np.array([total_income,income_loan_ratio,log_loan_amount]).reshape(-1, 1)
 scaler = StandardScaler()
 data_arr = scaler.fit_transform(scaler_arr)
+data_arr = data_arr.reshape(-1)
+data_arr = data_arr.tolist()
 
 input_data = np.array([[
     1 if gender == 'Male' else 0,
@@ -56,25 +58,28 @@ input_data = np.array([[
     1 if self_employed == 'Yes' else 0,
     loan_term,
     credit_history,
-    total_income,
     data_arr[0],
     data_arr[1],
     data_arr[2],
-    True if property_area =='Semiurban' else False,
-    True if property_area == 'Urban' else False,
+    True if property_area=='Semi Urban' else False,
+    True if property_area =='Urban' else False,
     True if dependents == 1 else False,
     True if dependents == 2 else False,
-    True if dependents == '3+' else False,
+    True if dependents == '3+' else False
+
 ]])
 
 # Apply scaler if used
 # input_data = scaler.transform(input_data)
 
 # Prediction
-if st.button("Predict Loan Approval"):
-    prediction_probs = model.predict_proba(input_data)[:,1]
-    prediction = (prediction_probs >= thresholds).astype(int)
-    if prediction == 1:
-        st.success(" Loan will likely be Approved!")
-    else:
-        st.error(" Loan will likely NOT be Approved.")
+if submitted:
+    probability = model.predict_proba(input_data)[:,1]
+    prediction = (probability >= thresholds).astype(int)
+    
+    st.success(f"Prediction: **{prediction}**")
+    st.info(f"Model Confidence: {round(max(probability)*100,2)}%")
+
+st.markdown("---")
+st.markdown(" **Created by [Puneet Saini](https://www.linkedin.com/in/puneet471/)**")
+st.markdown("[View Code on Github](https://github.com/Puneet0123/Loan_approval_project)")
