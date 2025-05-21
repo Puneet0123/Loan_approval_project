@@ -81,5 +81,5 @@ if submitted:
     st.info(f"Model Confidence: {round(max(probability)*100,2)}%")
 
 st.markdown("---")
-st.markdown(" **Created by [Jatin Yadav and Gaurav Yadav](https://www.linkedin.com/in/puneet471/)**")
+st.markdown(" **Created by [Punnet Saini](https://www.linkedin.com/in/puneet471/)**")
 st.markdown("[View Code on Github](https://github.com/Puneet0123/Loan_approval_project)")
